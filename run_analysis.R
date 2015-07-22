@@ -5,4 +5,4 @@ test_path <- 'UCI HAR Dataset/test'
 temp_zip <- tempfile()
 download.file(data_url, temp_zip)
 #data <- read.table(unz(temp_zip, ))
-unlink(temp)
+unlink(temp_zip)
