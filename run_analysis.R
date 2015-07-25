@@ -12,21 +12,30 @@ if( ! file.exists(root_path) ){
   unlink(temp_zip)
 }
 
-feature_names <- read.table(paste(root_path, 'features.txt', sep = '/'),
+# Step 1. Merges the training and the test sets to create one data set
+
+data_train_raw      <- read.table(paste(train_data_path, 'X_train.txt', sep = '/'))
+data_train_labels   <- read.table(paste(train_data_path, 'y_train.txt', sep = '/'), col.names = "Label")
+data_train_subjects <- read.table(paste(train_data_path, 'subject_train.txt', sep = '/'), col.names = "Subject")
+
+data_test_raw       <- read.table(paste(test_data_path, 'X_test.txt', sep = '/'))
+data_test_labels    <- read.table(paste(test_data_path, 'y_test.txt', sep = '/'), col.names = "Label")
+data_test_subjects  <- read.table(paste(test_data_path, 'subject_test.txt', sep = '/'), col.names = "Subject")
+
+features <- read.table(paste(root_path, 'features.txt', sep = '/'),
                        row.names = 1, col.names = c("ID", "Name"))
 
-data_train <- read.table(paste(train_data_path, 'X_train.txt', sep = '/'))
-data_train_labels <- read.table(paste(train_data_path, 'y_train.txt', sep = '/'))
+colnames(data_train_raw) <- features$Name
+colnames(data_test_raw) <- features$Name
 
-data_test <- read.table(paste(test_data_path, 'X_test.txt', sep = '/'))
-data_test_labels <- read.table(paste(test_data_path, 'y_test.txt', sep = '/'))
+data_train <- cbind(data_train_subjects, data_train_labels, data_train_raw)
+data_test <- cbind(data_test_subjects, data_test_labels, data_test_raw)
 
-colnames(data_train) <- feature_names$Name
-colnames(data_test) <- feature_names$Name
+data <- rbind(data_train, data_test)
 
-#print( dim(data_train) )
-#print( dim(data_test) )
+# Step 2. Extracts only the measurements on the mean and standard deviation for each measurement
+
+# Step 3. Uses descriptive activity names to name the activities in the data set
 
 #activity_labels <- read.table(paste(root_path, 'activity_labels.txt', sep='/'),
 #                              col.names = c('Label', 'Name'))
-#View(activity_labels)
