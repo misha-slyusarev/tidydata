@@ -1,5 +1,5 @@
 
-data_url <- 'https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip'
+data_url <- 'https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20dataset.zip'
 
 root_path <- 'UCI HAR Dataset'
 train_data_path <- paste(root_path, 'train', sep = '/')
@@ -46,3 +46,19 @@ activity_labels <- read.table(paste(root_path, 'activity_labels.txt', sep='/'),
 factor_activities <- as.factor(data$Label)
 levels(factor_activities) <- activity_labels$Name
 data$Label <- factor_activities
+
+# Step 4. Appropriately labels the data set with descriptive variable names
+
+names(data)<-gsub("^t", "Time", names(data))
+names(data)<-gsub("^f", "Frequency", names(data))
+names(data)<-gsub("Acc", "Accelerometer", names(data))
+names(data)<-gsub("Gyro", "Gyroscope", names(data))
+names(data)<-gsub("Mag", "Magnitude", names(data))
+names(data)<-gsub("BodyBody", "Body", names(data))
+
+# Step 5. From the data set in step 4, creates a second, independent tidy data 
+# set with the average of each variable for each activity and each subject.
+
+output_data <- aggregate(. ~Subject + Label, data, mean)
+output_data <- output_data[order(output_data$Subject, output_data$Label),]
+write.table(output_data, file = "tidydata.txt", row.name=FALSE)
