@@ -35,7 +35,14 @@ data <- rbind(data_train, data_test)
 
 # Step 2. Extracts only the measurements on the mean and standard deviation for each measurement
 
+measurments <- grep('mean\\(|std\\(', names(data), value = TRUE)
+data <- data[, c('Subject', 'Label', measurments)]
+
 # Step 3. Uses descriptive activity names to name the activities in the data set
 
-#activity_labels <- read.table(paste(root_path, 'activity_labels.txt', sep='/'),
-#                              col.names = c('Label', 'Name'))
+activity_labels <- read.table(paste(root_path, 'activity_labels.txt', sep='/'),
+                              col.names = c('Label', 'Name'))
+
+factor_activities <- as.factor(data$Label)
+levels(factor_activities) <- activity_labels$Name
+data$Label <- factor_activities
